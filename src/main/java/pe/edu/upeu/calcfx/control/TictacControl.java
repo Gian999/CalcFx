@@ -110,7 +110,7 @@ public class TictacControl extends MichiM{
     }
     @FXML
     public void procesadorDeGanador(String currentPlayer){
-        MichiM currentGame = serviceI.obtenerUltimoResultado(); // Ajusta esto a tu servicio o base de datos
+        MichiM currentGame = serviceI.obtenerResultados().getLast(); // Ajusta esto a tu servicio o base de datos
 
         if (checkWinner("X")) {
             currentGame.setWinner(txt1.getText()); // Asigna el nombre del ganador (jugador 1)
