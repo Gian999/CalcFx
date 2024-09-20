@@ -28,4 +28,12 @@ public class MichiJmp implements MichiJ{
     public void eliminarResultados(int index) {
         ja.remove(index);
     }
+
+    @Override
+    public MichiM obtenerUltimoResultado() {
+        if (ja.isEmpty()) {
+            return null;  // Si no hay resultados aún, devuelve null
+        }
+        return ja.get(ja.size() - 1);  // Devuelve el último resultado de la lista
+    }
 }

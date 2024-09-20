@@ -6,11 +6,17 @@ public class MichiM {
     String player1;
     String player2;
     String winner;
-    private int partido;
-    private int score;
-    private String status;
+    int Npartido;
+    int score;
+    String[] status= {"Anulado", "Terminado"};
 
+    public int getNpartido() {
+        return Npartido;
+    }
 
+    public void setNpartido(int npartido) {
+        Npartido = npartido;
+    }
 
     public String getPlayer1() {
         return player1;
@@ -36,16 +42,21 @@ public class MichiM {
         this.winner = winner;
     }
 
-    public int getPartido() { return partido; }
-    public void setPartido(int partido) { this.partido = partido; }
+    public int getScore() {
+        return score;
+    }
 
-    public int getScore() { return score; }
-    public void setScore(int score) { this.score = score; }
+    public void setScore(int score) {
+        this.score = score;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String[] getStatus() {
+        return status;
+    }
 
-
+    public void setStatus(String[] status) {
+        this.status = status;
+    }
 
 
 

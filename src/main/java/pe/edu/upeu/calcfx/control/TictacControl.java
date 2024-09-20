@@ -19,8 +19,6 @@ import java.util.List;
 
 @Component
 public class TictacControl extends MichiM{
-    private int contadorPartidos = 0;
-
     @Autowired
     MichiJ serviceI;
     @FXML
@@ -34,29 +32,24 @@ public class TictacControl extends MichiM{
     @FXML
     TableView tabla;
 
-//    @FXML
-//    TableColumn<CalcTO, String> colpartido;
+    @FXML
+    TableColumn<MichiM, String> colpartido;
     @FXML
     TableColumn<MichiM, String> colplayer1;
     @FXML
-    TableColumn<CalcTO, String> colplayer2;
+    TableColumn<MichiM, String> colplayer2;
     @FXML
-    TableColumn<CalcTO, String> colwinner;
-//    @FXML
-//    TableColumn<CalcTO, String> colscore;
-//    @FXML
-//    TableColumn<CalcTO, String> colstatus;
+    TableColumn<MichiM, String> colwinner;
+    @FXML
+    TableColumn<CalcTO, String> colscore;
+    @FXML
+    TableColumn<CalcTO, String> colstatus;
     private ObservableList<MichiM> MichiMList;
-    @FXML
-    private TableColumn<MichiM, Integer> colpartido;
-
-    @FXML
-    private TableColumn<MichiM, Integer> colscore;
-
-    @FXML
-    private TableColumn<MichiM, String> colstatus;
 
     boolean turno=true;
+    boolean ganadorGuardado = false; // Añade esto a la clase
+    int numPartida = 0;
+
 
     int winner;
     int score;
@@ -72,23 +65,23 @@ public class TictacControl extends MichiM{
         };
     }
 
+
     @FXML
-    void accionButon(ActionEvent e){
-        Button b = (Button) e.getSource();
-        b.setText(turno ? "X" : "O");
-        turno = !turno;
-
-        // Verificar ganador
-        String currentPlayer = turno ? "O" : "X"; // Jugador actual es el contrario del turno
-
-        if (checkWinner(currentPlayer)) {
-            System.out.println("Gana " + currentPlayer);
-
-            // Procesar el ganador y guardar los resultados
-            procesadorDeGanador(currentPlayer);
-
-            // Reiniciar el tablero para un nuevo juego
+    void accionButon(ActionEvent e, String jugador1, String jugador2, int numPartida, MichiM gg, String winner){
+        Button b=(Button)e.getSource();
+        b.setText(turno?"X":"O");
+        turno=!turno;
+        // Verifica combinaciones para "X"
+        if (checkWinner("X")) {
+            System.out.println("Gana X");
             anular();
+            procesadorDeGanador(jugador1, jugador2, numPartida, gg, winner);
+        }
+        // Verifica combinaciones para "O"
+        else if (checkWinner("O")) {
+            System.out.println("Gana O");
+            anular();
+            procesadorDeGanador(jugador1, jugador2, numPartida, gg, winner);
         }
     }
     boolean checkWinner(String player) {
@@ -109,30 +102,25 @@ public class TictacControl extends MichiM{
         return false;
     }
     @FXML
-    public void procesadorDeGanador(String currentPlayer){
-        MichiM currentGame = serviceI.obtenerResultados().getLast(); // Ajusta esto a tu servicio o base de datos
+    public void procesadorDeGanador(String jugador1, String jugador2, int numPartida, MichiM gg, String winner){
+        MichiM resultado = serviceI.obtenerUltimoResultado(); // Obtener el último resultado guardado
 
-        if (checkWinner("X")) {
-            currentGame.setWinner(txt1.getText()); // Asigna el nombre del ganador (jugador 1)
-            currentGame.setScore(1); // El ganador obtiene 1 punto
-            currentGame.setStatus("Terminado"); // Actualiza el estado a 'Terminado'
-            System.out.println("Gana X");
-        } else if (checkWinner("O")) {
-            currentGame.setWinner(txt2.getText()); // Asigna el nombre del ganador (jugador 2)
-            currentGame.setScore(1); // El ganador obtiene 1 punto
-            currentGame.setStatus("Terminado"); // Actualiza el estado a 'Terminado'
-            System.out.println("Gana O");
-        } else {
-            // Si nadie gana, se marca el juego como anulado
-            currentGame.setScore(0);
-            currentGame.setStatus("Anulado");
+        if (!ganadorGuardado) { // Verifica si el resultado ya fue guardado
+            if (checkWinner("X")){
+                winner= txt1.getText();
+                gg.setWinner(winner);
+                guardartemp(jugador1, jugador2, numPartida, gg, winner);
+                //serviceI.guardarResultados(gg);
+                ganadorGuardado = true; // Marca como guardado
+                listaOper();
+            } else if (checkWinner("O")){
+                winner= txt2.getText();
+                gg.setWinner(winner);
+                guardartemp(jugador1, jugador2, numPartida, gg, winner);
+               // serviceI.guardarResultados(gg);
+                ganadorGuardado = true; // Marca como guardado
+            }
         }
-
-        // Guarda el resultado actualizado en la base de datos
-        serviceI.actualizarResultados(currentGame);
-
-        // Refresca la tabla
-        listaOper();
     }
     @FXML
     void imprimir(){
@@ -147,28 +135,36 @@ public class TictacControl extends MichiM{
 
     @FXML
     public void iniciar(){
+
         if (txt1.getText().equals("") && txt2.getText().equals("")) {
             System.out.println("Coloca algo antes de empezar");
         } else if (!txt1.getText().equals("") && !txt2.getText().equals("")) {
             activaDesacticaB(false);
             String jugador1 = txt1.getText();
             String jugador2 = txt2.getText();
+            // Incrementa el contador de partidas
 
-            MichiM nuevoJuego = new MichiM();
-            nuevoJuego.setPlayer1(jugador1);
-            nuevoJuego.setPlayer2(jugador2);
-            nuevoJuego.setStatus("En curso"); // Marca el juego como "En curso"
-            nuevoJuego.setScore(0); // Inicia con score 0
-            nuevoJuego.setPartido(serviceI.obtenerNumeroDePartida() + 1); // Asigna un número de partida consecutivo
-
-            // Guarda el nuevo juego en la base de datos
-            serviceI.guardarResultados(nuevoJuego);
-
-            // Refresca la tabla
-            listaOper();
+            // Limpiar el tablero
+            for (int i = 0; i < tablero.length; i++) {
+                for (int j = 0; j < tablero[i].length; j++) {
+                    tablero[i][j].setText("");  // Limpia los botones
+                }
+            }
+            numPartida++;
+            MichiM gg = new MichiM();
+            gg.setPlayer1(jugador1);
+            gg.setPlayer2(jugador2);
+            gg.setNpartido(numPartida);  // Asignar el número de partida
+            guardartemp(jugador1, jugador2, numPartida, gg, String.valueOf(winner));
+            //serviceI.guardarResultados(gg);
         }
 
     }
+
+    private void guardartemp(String jugador1, String jugador2, int numPartida, MichiM gg, String winner) {
+        serviceI.guardarResultados(gg);
+    }
+
 
     @FXML
     public void anular(){
@@ -189,40 +185,46 @@ public class TictacControl extends MichiM{
         btn22.setDisable(indi);
     }
 
-   public void  listaOper(){
+    public void  listaOper(){
+        List<MichiM> lista = serviceI.obtenerResultados();
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Vincular columnas con propiedades de MichiM (no CalcTO)
+        colpartido.setCellValueFactory(new PropertyValueFactory<MichiM, String>("Npartido"));
+        colplayer1.setCellValueFactory(new PropertyValueFactory<MichiM, String>("player1"));
+        colplayer2.setCellValueFactory(new PropertyValueFactory<MichiM, String>("player2"));
+        colwinner.setCellValueFactory(new PropertyValueFactory<MichiM, String>("winner"));
+
+        MichiMList = FXCollections.observableArrayList(lista);
+        tabla.setItems(MichiMList);
+        // Asegúrate de que la tabla solo tiene una entrada por partida
 //        List<MichiM> lista= serviceI.obtenerResultados();
 //        for (MichiM to:lista) {
 //            System.out.println(to.toString());
 //        }
-       // Refresca la lista desde el servicio
-       List<MichiM> resultados = serviceI.obtenerResultados(); // O el método correcto de tu servicio
+//
+//        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+//
+//        // Vincular columnas con propiedades de CalcTO
+//        colplayer1.setCellValueFactory(new PropertyValueFactory<MichiM,
+//                String>("player1"));
+//
+//        colplayer2.setCellValueFactory(new PropertyValueFactory<CalcTO,
+//                String>("player2"));
+//
+//        colwinner.setCellValueFactory(new PropertyValueFactory<CalcTO,
+//                String>("winner"));
 
-       // Limpia la tabla antes de agregar nuevos datos
-       tabla.getItems().clear();
 
-       // Agrega los resultados actualizados a la tabla
-       tabla.getItems().addAll(resultados);
-       // Limpia la tabla antes de agregar nuevos datos para evitar duplicados
 
-        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Vincular columnas con propiedades de CalcTO
-       colplayer1.setCellValueFactory(new PropertyValueFactory<MichiM,
-               String>("player1"));
 
-       //colplayer1.setCellFactory(TextFieldTableCell.<MichiM>forTableColumn());
 
-       colplayer2.setCellValueFactory(new PropertyValueFactory<CalcTO,
-               String>("player2"));
 
-       colwinner.setCellValueFactory(new PropertyValueFactory<CalcTO,
-               String>("winner"));
-       colpartido.setCellValueFactory(new PropertyValueFactory<MichiM, Integer>("partido"));
-       colscore.setCellValueFactory(new PropertyValueFactory<MichiM, Integer>("score"));
-       colstatus.setCellValueFactory(new PropertyValueFactory<MichiM, String>("status"));
+
+
         /*cVal2.setCellValueFactory(new PropertyValueFactory<CalcTO,
                 String>("num2"));
-
 
         cVal2.setCellFactory(TextFieldTableCell.<CalcTO>forTableColumn());
 ..
@@ -250,8 +252,6 @@ public class TictacControl extends MichiM{
         cOpc.prefWidthProperty().bind(tableView.widthProperty().multiply(0.25));
 
          */
-       MichiMList = FXCollections.observableArrayList(serviceI.obtenerResultados());
-        tabla.setItems(MichiMList);
     }
 
 

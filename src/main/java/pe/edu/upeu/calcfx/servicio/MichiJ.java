@@ -9,5 +9,6 @@ public interface MichiJ {
     public List<MichiM> obtenerResultados();//R
     public void actualizarResultados(MichiM to, int index);//U
     public void eliminarResultados(int index);//D
+    MichiM obtenerUltimoResultado(); // Nuevo método
 
 }
