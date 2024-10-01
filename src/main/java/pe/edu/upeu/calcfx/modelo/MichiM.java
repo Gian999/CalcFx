@@ -2,13 +2,13 @@ package pe.edu.upeu.calcfx.modelo;
 
 import java.util.Arrays;
 
-public class MichiM {
+public class MichiM{
     String player1;
     String player2;
     String winner;
     int Npartido;
     int score;
-    String[] status= {"Anulado", "Terminado"};
+    String estado;
 
     public int getNpartido() {
         return Npartido;
@@ -50,14 +50,23 @@ public class MichiM {
         this.score = score;
     }
 
-    public String[] getStatus() {
-        return status;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setStatus(String[] status) {
-        this.status = status;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "MichiM{" +
+                "player1='" + player1 + '\'' +
+                ", player2='" + player2 + '\'' +
+                ", winner='" + winner + '\'' +
+                ", Npartido=" + Npartido +
+                ", score=" + score +
+                ", estado='" + estado + '\'' +
+                '}';
+    }
 }
