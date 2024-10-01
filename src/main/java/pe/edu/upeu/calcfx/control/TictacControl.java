@@ -114,6 +114,7 @@ public class TictacControl extends MichiM{
         gg.setPlayer2(jugador2);
 
         numPartida++;  // Incrementar número de partida
+
         gg.setNpartido(numPartida);  // Asignar número de partida al objeto
 
 
@@ -254,6 +255,9 @@ public class TictacControl extends MichiM{
 
     public void  listaOper(){
         List<MichiM> lista = serviceI.obtenerResultados();
+        for (MichiM to:lista) {
+            System.out.println(to.toString());
+        }
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         colpartido.setCellValueFactory(new PropertyValueFactory<MichiM, String>("Npartido"));
