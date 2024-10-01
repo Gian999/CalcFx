@@ -45,7 +45,6 @@ public class TictacControl extends MichiM{
     @FXML
     TableColumn<MichiM, String> colstatus;
     private ObservableList<MichiM> MichiMList;
-    private String currentPlayer = "X";
     boolean turno=true;
     boolean ganadorGuardado = false; // Añade esto a la clase
     int numPartida = 0;
