@@ -5,8 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import pe.edu.upeu.sysalmacenfx.model.Categoria;
-import pe.edu.upeu.sysalmacenfx.repository.MainX;
+import pe.edu.upeu.sysalmacenfx.pruebas.CategoriaCrud;
 
 @SpringBootApplication
 public class SysAlmacenFxApplication {
@@ -19,8 +18,11 @@ public class SysAlmacenFxApplication {
 	public CommandLineRunner run(ApplicationContext context) {
 		return args -> {
 			// Obtén el bean de MainX del contexto de Spring
-			MainX mx = context.getBean(MainX.class);
-			mx.menu();
+//			MainX mx = context.getBean(MainX.class);
+//			mx.menu();
+
+			CategoriaCrud CCrud = context.getBean(CategoriaCrud.class);
+			CCrud.menu();
 		};
 	}
 

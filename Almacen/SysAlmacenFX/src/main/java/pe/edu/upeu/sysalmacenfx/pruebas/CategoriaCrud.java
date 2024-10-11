@@ -1,19 +1,22 @@
-package pe.edu.upeu.sysalmacenfx.repository;
+package pe.edu.upeu.sysalmacenfx.pruebas;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pe.edu.upeu.sysalmacenfx.model.Categoria;
+import pe.edu.upeu.sysalmacenfx.service.CategoriaService;
+
 import java.util.Scanner;
 
 @Component
-public class MainX {
+public class CategoriaCrud {
     @Autowired
-    CategoriaRepository repository;
+    CategoriaService catRepo;
+    Scanner sc = new Scanner(System.in);
+    Categoria ca = new Categoria();
     private boolean exit = false;
     public void menu(){
-        Scanner sc = new Scanner(System.in);
         do {
-            System.out.println("Trabajo de Gianluck Yhudá Pastor Lovón");
+            System.out.println("Trabajo de Gianluck Yhudá Pastor Lovón: From Categoria CRUD desde Categoría Service");
             System.out.println("¿Que quieres hacer?");
             System.out.println("1. Crear");
             System.out.println("2. Actualizar");
@@ -49,19 +52,18 @@ public class MainX {
             }
         }while (!exit);
     }
+
     public void registro(){
-        Scanner sc = new Scanner(System.in);
-        Categoria ca = new Categoria();
+        sc.nextLine();
+        System.out.println("Registra:");
         System.out.print("Nuevo nombre: ");
         String newName = sc.nextLine();
         ca.setNombre(newName);
-        Categoria dd = repository.save(ca);
+        catRepo.save(ca);
         System.out.println("Reporte: ");
-        System.out.println(dd.getIdCategoria() + " " + dd.getNombre());
+        System.out.println(ca.getIdCategoria() + " " + ca.getNombre());
     }
-    public void actualizarCategoria() {
-        Scanner sc = new Scanner(System.in);
-        Categoria ca = new Categoria();
+    public void actualizarCategoria(){
         System.out.println("Actualizar Categoría");
         System.out.print("Ingrese el ID de la categoría a actualizar: ");
         int searchID = sc.nextInt();
@@ -69,15 +71,16 @@ public class MainX {
         sc.nextLine();
         String newName = sc.nextLine();
         ca.setNombre(newName);
-        ca.setIdCategoria((long) searchID);
-        Categoria dd = repository.save(ca);
-        System.out.println("Reporte: ");
-        System.out.println(dd.getIdCategoria() + " " + dd.getNombre());
+        catRepo.search((long) searchID);
+        catRepo.update(ca, (long) searchID);
 
+        System.out.println("Reporte: ");
+        System.out.println(catRepo.search((long) searchID)+ " " + catRepo.search((long) searchID).getNombre());
     }
+
     public void listar(){
         System.out.println("Listado de Categorías:");
-        for (Categoria ca : repository.findAll()) {
+        for (Categoria ca : catRepo.listIt()) {
             System.out.println(ca.getIdCategoria() + " - " + ca.getNombre());
         }
     }
@@ -88,7 +91,7 @@ public class MainX {
         System.out.println("Selecciona el Id de la categoría a eliminar:");
         Long searchID = sc.nextLong();
 
-        repository.deleteById(searchID);
+        catRepo.delete(searchID);
         System.out.println("Categoría con ID " + searchID + " eliminada.");
     }
 
