@@ -5,39 +5,39 @@ import org.springframework.stereotype.Service;
 import pe.edu.upeu.sysalmacenfx.model.Producto;
 import pe.edu.upeu.sysalmacenfx.repository.ProductoRepository;
 
-
 import java.util.List;
 
 @Service
 public class ProductoService {
     @Autowired
-    ProductoRepository service;
-    //C
-    public Producto save(Producto to) {
-        return service.save(to);
+    ProductoRepository repo;
+
+    public Producto save(Producto to){
+        return repo.save(to);
     }
-    //R
-    public List<Producto> listIt() {
-        return service.findAll();
+    public List<Producto> list(){
+        return repo.findAll();
     }
-    //U
-    public Producto update(Producto to, Long id) {
+    public Producto update(Producto to, Long id){
         try {
-            Producto toExistent = service.findById(id).get();
-            if (toExistent != null) {
-                toExistent.setNombre(to.getNombre());
-            }else{}
-            return service.save(toExistent);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
+            Producto toe=repo.findById(id).get();
+            if(toe!=null){
+                toe.setNombre(to.getNombre());
+            }
+            return repo.save(toe);
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getMessage());
         }
         return null;
     }
-    //D
-    public void delete(Long id) {
-        service.deleteById(id);
+
+    public Producto update(Producto to){
+        return repo.save(to);
     }
-    public Producto search(Long id) {
-        return service.findById(id).get();
+    public void delete(Long id){
+        repo.deleteById(id);
+    }
+    public Producto searchById(Long id){
+        return repo.findById(id).get();
     }
 }

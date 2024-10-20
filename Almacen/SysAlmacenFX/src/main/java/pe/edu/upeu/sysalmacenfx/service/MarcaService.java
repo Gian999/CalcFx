@@ -12,42 +12,46 @@ import java.util.List;
 
 @Service
 public class MarcaService {
+
     @Autowired
-    MarcaRepository service;
-    //C
-    public Marca save(Marca to) {
-        return service.save(to);
+    MarcaRepository repo;
+    public Marca save(Marca to){
+        return repo.save(to);
     }
-    //R
-    public List<Marca> listIt() {
-        return service.findAll();
+    public List<Marca> list(){
+        return repo.findAll();
     }
-    //U
-    public Marca update(Marca to, Long id) {
+    public Marca update(Marca to, Long id){
         try {
-            Marca toExistent = service.findById(id).get();
-            if (toExistent != null) {
-                toExistent.setNombre(to.getNombre());
-            }else{}
-            return service.save(toExistent);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
+            Marca toe=repo.findById(id).get();
+            if(toe!=null){
+                toe.setNombre(to.getNombre());
+            }
+            return repo.save(toe);
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getMessage());
         }
         return null;
     }
-    //D
-    public void delete(Long id) {
-        service.deleteById(id);
+
+    public Marca update(Marca to){
+        return repo.save(to);
     }
-    public Marca search(Long id) {
-        return service.findById(id).get();
+    public void delete(Long id){
+        repo.deleteById(id);
+    }
+    public Marca searchById(Long id){
+        return repo.findById(id).orElse(null);
     }
 
-    public List<ComboBoxOption> listaCategoriaCombobox(){
+    public List<ComboBoxOption> listarCombobox(){
         List<ComboBoxOption> listar=new ArrayList<>();
-        for (Marca marca : service.findAll()) {
-            listar.add(new ComboBoxOption(String.valueOf(marca.getIdMarca()),
-                    marca.getNombre()));
+        ComboBoxOption cb;
+        for(Marca cate : repo.findAll()) {
+            cb=new ComboBoxOption();
+            cb.setKey(String.valueOf(cate.getIdMarca()));
+            cb.setValue(cate.getNombre());
+            listar.add(cb);
         }
         return listar;
     }

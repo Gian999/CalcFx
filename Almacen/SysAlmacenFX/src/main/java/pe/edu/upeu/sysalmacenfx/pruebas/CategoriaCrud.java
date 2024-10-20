@@ -71,16 +71,16 @@ public class CategoriaCrud {
         sc.nextLine();
         String newName = sc.nextLine();
         ca.setNombre(newName);
-        catRepo.search((long) searchID);
+        catRepo.searchById((long) searchID);
         catRepo.update(ca, (long) searchID);
 
         System.out.println("Reporte: ");
-        System.out.println(catRepo.search((long) searchID)+ " " + catRepo.search((long) searchID).getNombre());
+        System.out.println(catRepo.searchById((long) searchID)+ " " + catRepo.searchById((long) searchID).getNombre());
     }
 
     public void listar(){
         System.out.println("Listado de Categorías:");
-        for (Categoria ca : catRepo.listIt()) {
+        for (Categoria ca : catRepo.list()) {
             System.out.println(ca.getIdCategoria() + " - " + ca.getNombre());
         }
     }

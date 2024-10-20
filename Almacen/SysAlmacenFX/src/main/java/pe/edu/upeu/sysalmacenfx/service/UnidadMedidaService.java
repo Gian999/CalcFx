@@ -3,49 +3,57 @@ package pe.edu.upeu.sysalmacenfx.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.edu.upeu.sysalmacenfx.dto.ComboBoxOption;
+import pe.edu.upeu.sysalmacenfx.model.Marca;
 import pe.edu.upeu.sysalmacenfx.model.UnidadMedida;
-import pe.edu.upeu.sysalmacenfx.repository.UnidadMedidaRepository;
 import pe.edu.upeu.sysalmacenfx.repository.UnidadMedidaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class UnidadMedidaService {
+
+
     @Autowired
-    UnidadMedidaRepository service;
-    //C
-    public UnidadMedida save(UnidadMedida to) {
-        return service.save(to);
+    UnidadMedidaRepository repo;
+    public UnidadMedida save(UnidadMedida to){
+        return repo.save(to);
     }
-    //R
-    public List<UnidadMedida> listIt() {
-        return service.findAll();
+    public List<UnidadMedida> list(){
+        return repo.findAll();
     }
-    //U
-    public UnidadMedida update(UnidadMedida to, Long id) {
+    public UnidadMedida update(UnidadMedida to, Long id){
         try {
-            UnidadMedida toExistent = service.findById(id).get();
-            if (toExistent != null) {
-                toExistent.setNombreMedida(to.getNombreMedida());
-            }else{}
-            return service.save(toExistent);
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
+            UnidadMedida toe=repo.findById(id).get();
+            if(toe!=null){
+                toe.setNombreMedida(to.getNombreMedida());
+            }
+            return repo.save(toe);
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getMessage());
         }
         return null;
     }
-    //D
-    public void delete(Long id) {
-        service.deleteById(id);
+
+    public UnidadMedida update(UnidadMedida to){
+        return repo.save(to);
     }
-    public UnidadMedida search(Long id) {
-        return service.findById(id).get();
+    public void delete(Long id){
+        repo.deleteById(id);
     }
-    public List<ComboBoxOption> listaCategoriaCombobox(){
+    public UnidadMedida searchById(Long id){
+        return repo.findById(id).orElse(null);
+    }
+
+
+    public List<ComboBoxOption> listarCombobox(){
         List<ComboBoxOption> listar=new ArrayList<>();
-        for (UnidadMedida unidadMed : service.findAll()) {
-            listar.add(new ComboBoxOption(String.valueOf(unidadMed.getIdUnidad()),
-                    unidadMed.getNombreMedida()));
+        ComboBoxOption cb;
+        for(UnidadMedida cate : repo.findAll()) {
+            cb=new ComboBoxOption();
+            cb.setKey(String.valueOf(cate.getIdUnidad()));
+            cb.setValue(cate.getNombreMedida());
+            listar.add(cb);
         }
         return listar;
     }
